@@ -1,0 +1,66 @@
+.policy-list-container {
+  width: 95%;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* 🔹 Table Styling */
+.policy-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.policy-table th, 
+.policy-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 14px;
+}
+
+.policy-table th {
+  background: #007bff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+}
+
+.policy-table th:hover {
+  background: #0056b3;
+}
+
+/* 🔹 Sorting Arrows */
+.policy-table th:after {
+  content: " ⇅";
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.policy-table th:hover:after {
+  opacity: 1;
+}
+
+/* 🔹 Alternate Row Background */
+.policy-table tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+/* 🔹 Mobile Responsiveness */
+@media (max-width: 768px) {
+  .policy-table th, .policy-table td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .policy-list-container {
+    width: 100%;
+    padding: 10px;
+  }
+}

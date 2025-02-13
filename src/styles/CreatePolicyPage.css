@@ -1,0 +1,111 @@
+/* 🔹 Main Container */
+.create-policy-container {
+  width: 90%;
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 25px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* 🔹 Form Styling */
+.policy-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* 🔹 Form Row */
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* 🔹 Label Styling */
+.form-row label {
+  width: 30%;
+  font-weight: bold;
+  text-align: right;
+  padding-right: 10px;
+}
+
+/* 🔹 Input Styling */
+.form-row input {
+  width: 65%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #f9f9f9;
+  transition: border 0.3s ease-in-out;
+}
+
+.form-row input:focus {
+  border-color: #007bff;
+  background: white;
+  outline: none;
+}
+
+/* 🔹 Button Group */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* 🔹 Buttons */
+.submit-button, .clear-button {
+  padding: 12px 18px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.submit-button {
+  background: #007bff;
+  color: white;
+}
+
+.submit-button:hover {
+  background: #0056b3;
+  transform: scale(1.03);
+}
+
+.clear-button {
+  background: #dc3545;
+  color: white;
+}
+
+.clear-button:hover {
+  background: #a82332;
+  transform: scale(1.03);
+}
+
+/* 🔹 Responsive Design */
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-row label {
+    text-align: left;
+    width: 100%;
+    padding-bottom: 5px;
+  }
+
+  .form-row input {
+    width: 100%;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

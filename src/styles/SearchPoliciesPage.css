@@ -1,0 +1,161 @@
+/* 🔹 Main container */
+.search-container {
+  width: 95%;
+  max-width: 1400px;
+  margin: 30px auto;
+  padding: 25px;
+  background: #ffffff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  text-align: center;
+}
+
+/* 🔹 Form layout - Two-column layout */
+.search-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);  
+  gap: 20px;
+  padding: 20px;
+  align-items: center;
+}
+
+
+.form-group.full-width {
+  width: 50%; 
+  margin: auto;
+}
+
+/* 🔹 Form field styling */
+.form-group {
+  display: flex;
+  align-items: center;
+}
+
+.form-group label {
+  width: 40%;  /* Labels take 40% space */
+  font-weight: bold;
+  text-align: right; /* Right-aligned labels */
+  padding-right: 10px;
+}
+
+.form-group input,
+.form-group select {
+  width: 60%;  /* Inputs take 60% space */
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #f8f8f8;
+  transition: border 0.3s ease-in-out;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #007bff;
+  outline: none;
+  background: white;
+}
+
+/* 🔹 Align buttons */
+.button-group {
+  grid-column: span 2;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+/* 🔹 Search and Clear Buttons */
+.search-btn,
+.clear-btn {
+  padding: 12px 18px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.search-btn {
+  background: #007bff;
+  color: white;
+}
+
+.search-btn:hover {
+  background: #0056b3;
+  transform: scale(1.03);
+}
+
+.clear-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.clear-btn:hover {
+  background: #a82332;
+  transform: scale(1.03);
+}
+
+/* 🔹 Table Styling */
+.policy-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.policy-table th,
+.policy-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* 🔹 Sortable Table Headers */
+.policy-table th {
+  background: #007bff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer; /* Shows pointer to indicate sorting */
+  user-select: none; /* Prevents accidental text selection */
+}
+
+.policy-table th:hover {
+  background: #0056b3;
+}
+
+/* 🔹 Zebra Striping for Rows */
+.policy-table tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+/* 🔹 Mobile responsiveness */
+@media (max-width: 768px) {
+  .search-form {
+    grid-template-columns: 1fr;  /* Switch to single column on small screens */
+  }
+
+  .form-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-group label {
+    width: 100%;
+    text-align: left; /* Align labels left for better readability */
+    margin-bottom: 5px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
