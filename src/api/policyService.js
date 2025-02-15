@@ -40,6 +40,21 @@ export const getPolicyById = async (id) => {
 };
 
 /**
+ * Fetch a policy by Policy Number
+ */
+export const getPolicyByPolicyNumber = async (policyNumber) => {
+  try {
+    if (!policyNumber) return null;
+
+    const response = await fetch(`${API_BASE_URL}/policyNumber/${policyNumber}`);
+    return await handleResponse(response);
+  } catch (error) {
+    console.error("Error fetching policy by Policy Number:", error);
+    return null;
+  }
+};
+
+/**
  * Fetch filtered policies
  */
 export const getFilteredPolicies = async (filters) => {
@@ -94,11 +109,10 @@ export const updatePolicy = async (policyId, policyData) => {
   }
 };
 
-
 /**
  * Search handler for policies (Used in React components)
  */
-export const handleSearch = async (e, policyId, filters, setLoading, setError, setPolicies) => {
+export const handleSearch = async (e, policyId, policyNumber, filters, setLoading, setError, setPolicies) => {
   e.preventDefault();
   setLoading(true);
   setError("");
@@ -109,6 +123,9 @@ export const handleSearch = async (e, policyId, filters, setLoading, setError, s
 
     if (policyId) {
       data = await getPolicyById(policyId);
+      setPolicies(data ? [data] : []);
+    } else if (policyNumber) {
+      data = await getPolicyByPolicyNumber(policyNumber);
       setPolicies(data ? [data] : []);
     } else {
       data = await getFilteredPolicies(filters);
@@ -124,6 +141,10 @@ export const handleSearch = async (e, policyId, filters, setLoading, setError, s
     setLoading(false);
   }
 };
+
+/**
+ * Delete a policy by ID
+ */
 export const deletePolicy = async (id) => {
   try {
     const response = await fetch(`${API_BASE_URL}/${id}`, {
@@ -140,4 +161,3 @@ export const deletePolicy = async (id) => {
     throw error;
   }
 };
-

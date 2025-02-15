@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getFilteredPolicies, getPolicyById, deletePolicy } from "../api/policyService";
+import { getFilteredPolicies, getPolicyById, getPolicyByPolicyNumber, deletePolicy } from "../api/policyService";
 import { useNavigate } from "react-router-dom";
 import "../styles/SearchPoliciesPage.css";
 
@@ -16,6 +16,7 @@ const SearchPoliciesPage = () => {
     maxPremium: "",
     firstName: "",
     lastName: "",
+    policyNumber: "",  // Added policy number filter
   });
 
   const [policyId, setPolicyId] = useState("");
@@ -44,9 +45,12 @@ const SearchPoliciesPage = () => {
 
     try {
       let data = [];
-      
+
       if (policyId) {
         data = await getPolicyById(policyId);
+        setPolicies(data ? [data] : []);
+      } else if (filters.policyNumber) {
+        data = await getPolicyByPolicyNumber(filters.policyNumber);
         setPolicies(data ? [data] : []);
       } else {
         data = await getFilteredPolicies(filters);
@@ -100,6 +104,7 @@ const SearchPoliciesPage = () => {
       maxPremium: "",
       firstName: "",
       lastName: "",
+      policyNumber: "",  // Reset policy number filter
     });
     setPolicyId("");
     setPolicies([]);
@@ -111,9 +116,14 @@ const SearchPoliciesPage = () => {
       <h2>Search Policies</h2>
 
       <form onSubmit={handleSearch} className="search-form">
-        <div className="form-group full-width">
+        <div className="form-group">
           <label>Search by Policy ID:</label>
           <input type="text" name="policyId" value={policyId} onChange={handleIdChange} placeholder="Enter Policy ID (e.g., 101)" />
+        </div>
+
+        <div className="form-group">
+          <label>Search by Policy Number:</label>
+          <input type="text" name="policyNumber" value={filters.policyNumber} onChange={handleChange} placeholder="Enter Policy Number (e.g., AP-100)" />
         </div>
 
         <hr />
