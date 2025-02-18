@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getAllPolicies } from "../api/policyService";
-import PolicyList from "../components/PolicyList"; 
+import PolicyList from "../components/PolicyList";
 import "../styles/PolicyListPage.css";
 
 const PolicyListPage = () => {
@@ -26,10 +26,14 @@ const PolicyListPage = () => {
   return (
     <div className="policy-list-container">
       <h2>All Policies</h2>
-      {loading && <p className="loading">Loading policies...</p>}
+      {loading && (
+        <p className="loading">
+          <span className="spinner">🌀</span> Loading policies...
+        </p>
+      )}
       {error && <p className="error">{error}</p>}
-      
-      {/* ✅ Use the reusable component */}
+
+     
       {!loading && !error && <PolicyList policies={policies} />}
     </div>
   );

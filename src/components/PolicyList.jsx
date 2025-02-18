@@ -5,11 +5,10 @@ const PolicyList = ({ policies }) => {
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
 
-  // 🔹 Handle sorting logic
   const handleSort = (field) => {
     let newSortOrder = "asc";
     if (sortField === field && sortOrder === "asc") {
-      newSortOrder = "desc"; // Toggle sorting order
+      newSortOrder = "desc"; 
     }
 
     setSortField(field);
@@ -19,7 +18,7 @@ const PolicyList = ({ policies }) => {
       let valueA = a[field];
       let valueB = b[field];
 
-      // Convert values for proper comparison (numbers should be compared as numbers)
+    
       if (!isNaN(valueA) && !isNaN(valueB)) {
         valueA = Number(valueA);
         valueB = Number(valueB);

@@ -1,0 +1,78 @@
+
+
+
+.security-policy-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+
+  .security-policy-container h1 {
+    text-align: center;
+    font-size: 32px;
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+  
+
+  .security-policy-container h2 {
+    font-size: 24px;
+    margin-top: 20px;
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+  }
+  
+  .security-policy-container p {
+    font-size: 18px;
+    color: #555;
+    line-height: 1.6;
+    margin: 10px 0;
+  }
+  
+  /* List Styling */
+  .security-policy-container ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .security-policy-container ul li {
+    font-size: 18px;
+    color: #444;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .security-policy-container ul li::before {
+    content: "🔹"; 
+    margin-right: 10px;
+    color: #007bff;
+    font-size: 20px;
+  }
+  
+
+  .contact-info {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .contact-info p {
+    font-size: 18px;
+    color: #007bff;
+  }
+  
+  .contact-info a {
+    font-size: 18px;
+    color: #0056b3;
+    text-decoration: none;
+  }
+  
+  .contact-info a:hover {
+    text-decoration: underline;
+  }
+  

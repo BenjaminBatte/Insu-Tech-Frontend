@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getFilteredPolicies, getPolicyById, getPolicyByPolicyNumber, deletePolicy } from "../api/policyService";
 import { useNavigate } from "react-router-dom";
 import "../styles/SearchPoliciesPage.css";
@@ -16,7 +16,7 @@ const SearchPoliciesPage = () => {
     maxPremium: "",
     firstName: "",
     lastName: "",
-    policyNumber: "",  // Added policy number filter
+    policyNumber: "",
   });
 
   const [policyId, setPolicyId] = useState("");
@@ -29,16 +29,18 @@ const SearchPoliciesPage = () => {
   const policyStatuses = ["ACT", "EXP", "CAN"];
   const policyTypes = ["LIAB", "COMP", "COLL"];
 
-  const handleChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
-  };
+  useEffect(() => {
+    if (policyId || filters.policyNumber) {
+      handleSearch();
+    }
+  }, []); 
 
-  const handleIdChange = (e) => {
-    setPolicyId(e.target.value);
-  };
+  const handleChange = (e) => setFilters({ ...filters, [e.target.name]: e.target.value });
+
+  const handleIdChange = (e) => setPolicyId(e.target.value);
 
   const handleSearch = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setLoading(true);
     setError("");
     setPolicies([]);
@@ -57,25 +59,24 @@ const SearchPoliciesPage = () => {
         setPolicies(Array.isArray(data) ? data : []);
       }
 
-      if (!data || data.length === 0) {
-        setError("No policies found.");
-      }
+      if (!data || data.length === 0) setError("No policies found.");
     } catch (error) {
-      setError("Failed to fetch policies.");
+      console.error("Error fetching policies:", error);
+      setError("Failed to fetch policies. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this policy?")) {
-      try {
-        await deletePolicy(id);
-        setPolicies(policies.filter((policy) => policy.id !== id));
-        alert("Policy deleted successfully!");
-      } catch (error) {
-        alert("Failed to delete policy.");
-      }
+    if (!window.confirm("Are you sure you want to delete this policy?")) return;
+    try {
+      await deletePolicy(id);
+      setPolicies((prevPolicies) => prevPolicies.filter((policy) => policy.id !== id));
+      alert("Policy deleted successfully!");
+    } catch (error) {
+      console.error("Delete failed:", error);
+      alert("Failed to delete policy.");
     }
   };
 
@@ -84,13 +85,12 @@ const SearchPoliciesPage = () => {
     setSortField(field);
     setSortOrder(order);
 
-    const sortedPolicies = [...policies].sort((a, b) => {
-      if (a[field] < b[field]) return order === "asc" ? -1 : 1;
-      if (a[field] > b[field]) return order === "asc" ? 1 : -1;
-      return 0;
-    });
-
-    setPolicies(sortedPolicies);
+    setPolicies((prevPolicies) =>
+      [...prevPolicies].sort((a, b) => {
+        if (typeof a[field] === "string") return a[field].localeCompare(b[field]) * (order === "asc" ? 1 : -1);
+        return (a[field] - b[field]) * (order === "asc" ? 1 : -1);
+      })
+    );
   };
 
   const handleClear = () => {
@@ -104,7 +104,7 @@ const SearchPoliciesPage = () => {
       maxPremium: "",
       firstName: "",
       lastName: "",
-      policyNumber: "",  // Reset policy number filter
+      policyNumber: "",
     });
     setPolicyId("");
     setPolicies([]);
@@ -128,15 +128,12 @@ const SearchPoliciesPage = () => {
 
         <hr />
 
-        <div className="form-group">
-          <label>Start Date:</label>
-          <input type="date" name="startDate" value={filters.startDate} onChange={handleChange} />
-        </div>
-
-        <div className="form-group">
-          <label>End Date:</label>
-          <input type="date" name="endDate" value={filters.endDate} onChange={handleChange} />
-        </div>
+        {["startDate", "endDate", "vehicleMake", "minPremium", "maxPremium", "firstName", "lastName"].map((field) => (
+          <div className="form-group" key={field}>
+            <label>{field.replace(/([A-Z])/g, " $1")}:</label>
+            <input type={field.includes("Date") ? "date" : field.includes("Premium") ? "number" : "text"} name={field} value={filters[field]} onChange={handleChange} />
+          </div>
+        ))}
 
         <div className="form-group">
           <label>Policy Status:</label>
@@ -158,53 +155,23 @@ const SearchPoliciesPage = () => {
           </select>
         </div>
 
-        <div className="form-group">
-          <label>Vehicle Make:</label>
-          <input type="text" name="vehicleMake" value={filters.vehicleMake} onChange={handleChange} />
-        </div>
-
-        <div className="form-group">
-          <label>Min Premium:</label>
-          <input type="number" name="minPremium" value={filters.minPremium} onChange={handleChange} />
-        </div>
-
-        <div className="form-group">
-          <label>Max Premium:</label>
-          <input type="number" name="maxPremium" value={filters.maxPremium} onChange={handleChange} />
-        </div>
-
-        <div className="form-group">
-          <label>First Name:</label>
-          <input type="text" name="firstName" value={filters.firstName} onChange={handleChange} />
-        </div>
-
-        <div className="form-group">
-          <label>Last Name:</label>
-          <input type="text" name="lastName" value={filters.lastName} onChange={handleChange} />
-        </div>
-
         <div className="button-group">
-          <button type="submit" className="search-btn">Search</button>
+          <button type="submit" className="search-btn" disabled={loading}>{loading ? "Searching..." : "Search"}</button>
           <button type="button" className="clear-btn" onClick={handleClear}>Clear</button>
         </div>
       </form>
 
-      {loading && <p>Loading policies...</p>}
       {error && <p className="error">{error}</p>}
 
       {policies.length > 0 && (
         <table className="policy-table">
           <thead>
             <tr>
-              <th onClick={() => handleSort("id")}>ID</th>
-              <th onClick={() => handleSort("policyNumber")}>Policy Number</th>
-              <th onClick={() => handleSort("status")}>Status</th>
-              <th onClick={() => handleSort("policyType")}>Type</th>
-              <th onClick={() => handleSort("vehicleMake")}>Vehicle</th>
-              <th onClick={() => handleSort("firstName")}>Owner</th>
-              <th onClick={() => handleSort("startDate")}>Start Date</th>
-              <th onClick={() => handleSort("endDate")}>End Date</th>
-              <th onClick={() => handleSort("premiumAmount")}>Premium</th>
+              {["id", "policyNumber", "status", "policyType", "vehicleMake", "firstName", "startDate", "endDate", "premiumAmount"].map((field) => (
+                <th key={field} onClick={() => handleSort(field)} className={sortField === field ? "active-sort" : ""}>
+                  {field.replace(/([A-Z])/g, " $1")}
+                </th>
+              ))}
               <th>Actions</th>
             </tr>
           </thead>
@@ -215,7 +182,7 @@ const SearchPoliciesPage = () => {
                 <td>{policy.policyNumber}</td>
                 <td>{policy.status}</td>
                 <td>{policy.policyType}</td>
-                <td>{policy.vehicleMake} {policy.vehicleModel} ({policy.vehicleYear})</td>
+                <td>{policy.vehicleMake} ({policy.vehicleYear})</td>
                 <td>{policy.firstName} {policy.lastName}</td>
                 <td>{policy.startDate}</td>
                 <td>{policy.endDate}</td>

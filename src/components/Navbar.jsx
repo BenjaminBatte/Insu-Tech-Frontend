@@ -4,7 +4,7 @@ import "../styles/Navbar.css";
 const Navbar = () => {
   return (
     <nav className="navbar">
-      <h1>Insurance Portal</h1>
+      <h1 className="navbar-heading">Insure<span className="highlight">Pro</span></h1>
       <ul>
         <li><Link to="/">Home</Link></li>
         <li><Link to="/create">Create Policy</Link></li>

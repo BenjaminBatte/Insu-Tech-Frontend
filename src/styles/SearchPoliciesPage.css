@@ -1,161 +1,122 @@
-/* 🔹 Main container */
-.search-container {
-  width: 95%;
-  max-width: 1400px;
-  margin: 30px auto;
-  padding: 25px;
-  background: #ffffff;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  text-align: center;
-}
 
-/* 🔹 Form layout - Two-column layout */
 .search-form {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);  
-  gap: 20px;
-  padding: 20px;
-  align-items: center;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 
-.form-group.full-width {
-  width: 50%; 
-  margin: auto;
-}
-
-/* 🔹 Form field styling */
 .form-group {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px; 
+  background: #ffffff; 
+  border-radius: 10px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease-in-out;
 }
 
 .form-group label {
-  width: 40%;  /* Labels take 40% space */
-  font-weight: bold;
-  text-align: right; /* Right-aligned labels */
-  padding-right: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 10px; 
 }
+
 
 .form-group input,
 .form-group select {
-  width: 60%;  /* Inputs take 60% space */
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background: #f8f8f8;
-  transition: border 0.3s ease-in-out;
+  width: 100%;
+  padding: 15px; 
+  font-size: 16px;
+  border: 1px solid #d1d3d4;
+  border-radius: 8px;
+  background: white;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.07);
 }
 
 .form-group input:focus,
 .form-group select:focus {
   border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
   outline: none;
-  background: white;
+  transform: scale(1.02);
 }
 
-/* 🔹 Align buttons */
+
 .button-group {
-  grid-column: span 2;
+  grid-column: span 3;
   display: flex;
   justify-content: center;
-  gap: 15px;
-  margin-top: 15px;
+  gap: 25px;
+  margin-top: 30px; 
 }
 
-/* 🔹 Search and Clear Buttons */
+
 .search-btn,
 .clear-btn {
-  padding: 12px 18px;
-  font-size: 16px;
-  font-weight: bold;
+  padding: 18px 36px; 
+  font-size: 18px; 
+  font-weight: 700;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.3s ease-in-out, transform 0.1s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
 }
 
+
 .search-btn {
-  background: #007bff;
+  background-color: #007bff; 
   color: white;
 }
 
 .search-btn:hover {
-  background: #0056b3;
-  transform: scale(1.03);
+  background-color: #0056b3; 
+  transform: translateY(-3px);
 }
 
+
 .clear-btn {
-  background: #dc3545;
+  background-color: #dc3545; 
   color: white;
 }
 
 .clear-btn:hover {
-  background: #a82332;
-  transform: scale(1.03);
+  background-color: #b52a37; 
+  transform: translateY(-3px);
 }
 
-/* 🔹 Table Styling */
-.policy-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  border-radius: 10px;
-  overflow: hidden;
+
+@media (max-width: 1024px) {
+  .search-form {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.policy-table th,
-.policy-table td {
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: center;
-  font-size: 14px;
-}
-
-/* 🔹 Sortable Table Headers */
-.policy-table th {
-  background: #007bff;
-  color: white;
-  font-weight: bold;
-  cursor: pointer; /* Shows pointer to indicate sorting */
-  user-select: none; /* Prevents accidental text selection */
-}
-
-.policy-table th:hover {
-  background: #0056b3;
-}
-
-/* 🔹 Zebra Striping for Rows */
-.policy-table tr:nth-child(even) {
-  background: #f8f9fa;
-}
-
-/* 🔹 Mobile responsiveness */
 @media (max-width: 768px) {
   .search-form {
-    grid-template-columns: 1fr;  /* Switch to single column on small screens */
+    grid-template-columns: 1fr;
   }
 
   .form-group {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .form-group label {
-    width: 100%;
-    text-align: left; /* Align labels left for better readability */
-    margin-bottom: 5px;
-  }
-
-  .form-group input,
-  .form-group select {
-    width: 100%;
+    padding: 14px; 
   }
 
   .button-group {
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+  }
+
+  .search-btn,
+  .clear-btn {
+    width: 100%; 
   }
 }
