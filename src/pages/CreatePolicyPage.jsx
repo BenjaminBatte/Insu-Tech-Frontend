@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { createPolicy, updatePolicy, getPolicyById } from "../api/policyService"; // ✅ Import correctly
+import { createPolicy, updatePolicy, getPolicyById } from "../api/policyService"; 
 import "../styles/CreatePolicyPage.css";
 
+const POLICY_TYPES = ["LIABILITY", "COLLISION", "COMPREHENSIVE"];
+const POLICY_STATUSES = ["ACTIVE", "EXPIRED", "CANCELLED"];
+
 const CreatePolicyPage = () => {
-  const { policyId } = useParams(); // Check if updating an existing policy
+  const { policyId } = useParams();
   const navigate = useNavigate();
 
   const [policy, setPolicy] = useState({
@@ -106,12 +109,23 @@ const CreatePolicyPage = () => {
         </div>
 
         <div className="form-row">
-          <label htmlFor="policyType">Policy Type:</label>
-          <input type="text" id="policyType" name="policyType" value={policy.policyType} onChange={handleChange} required />
+  <label htmlFor="policyType">Policy Type:</label>
+  <select id="policyType" name="policyType" value={policy.policyType} onChange={handleChange} required>
+    <option value="">Select Policy Type</option>
+    {POLICY_TYPES.map((type) => (
+      <option key={type} value={type}>{type}</option>
+    ))}
+  </select>
 
-          <label htmlFor="status">Status:</label>
-          <input type="text" id="status" name="status" value={policy.status} onChange={handleChange} required />
-        </div>
+  <label htmlFor="status">Status:</label>
+  <select id="status" name="status" value={policy.status} onChange={handleChange} required>
+    <option value="">Select Status</option>
+    {POLICY_STATUSES.map((status) => (
+      <option key={status} value={status}>{status}</option>
+    ))}
+  </select>
+</div>
+
 
         <div className="form-row">
           <label htmlFor="premiumAmount">Premium Amount:</label>

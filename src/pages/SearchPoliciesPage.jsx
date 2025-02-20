@@ -26,8 +26,9 @@ const SearchPoliciesPage = () => {
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
 
-  const policyStatuses = ["ACT", "EXP", "CAN"];
-  const policyTypes = ["LIAB", "COMP", "COLL"];
+  const policyStatuses = ["ACTIVE", "EXPIRED", "CANCELLED"];
+  const policyTypes = ["LIABILITY", "COLLISION", "COMPREHENSIVE"];
+
 
   useEffect(() => {
     if (policyId || filters.policyNumber) {
