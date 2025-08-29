@@ -6,6 +6,7 @@ import PolicyListPage from "./pages/PolicyListPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SearchPoliciesPage from "./pages/SearchPoliciesPage"; 
 import SecurityPolicy from "./pages/SecurityPolicy";
+import ManagedPolicyManagement from "./pages/ManagedPolicyManagement";
 
 // Import user management pages
 import UserManagement from "./pages/UserManagement";
@@ -30,6 +31,8 @@ const App = () => {
             <Route path="/users/create" element={<CreateUser />} />
             <Route path="/users/edit/:id" element={<EditUser />} />
             <Route path="/users/:id" element={<UserDetail />} />
+
+            <Route path="/managed-policies" element={<ManagedPolicyManagement />} />
             
             <Route path="*" element={<NotFoundPage />} />
             <Route path="/edit/:policyId" element={<CreatePolicyPage />} />

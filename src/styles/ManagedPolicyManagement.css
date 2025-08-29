@@ -1,0 +1,22 @@
+.policy-management .form-group {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.policy-management label {
+  font-weight: 500;
+  color: #444;
+}
+
+/* Fix dropdown width */
+.policy-management select {
+  width: auto;              /* only as wide as content */
+  max-width: 250px;         /* or set a max width */
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+}

@@ -11,6 +11,8 @@ const Navbar = () => {
         <li><Link to="/policies">View Policies</Link></li>
         <li><Link to="/search">Search Policies</Link></li>
         <li><Link to="/users">User Management</Link></li>
+        <li><a href="/managed-policies">Managed Policies</a></li>
+
       </ul>
     </nav>
   );

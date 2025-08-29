@@ -1,11 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { createPolicy, updatePolicy, getPolicyById } from "../api/policyService";
+import { getAllUsers } from "../api/userService";
 import "../styles/CreatePolicyPage.css";
 
 const CreatePolicyPage = () => {
   const { policyId } = useParams();
   const syncRef = useRef(null);
+
+  const [users, setUsers] = useState([]);
+  const [years, setYears] = useState([]); //  store years for dropdown
 
   const [policy, setPolicy] = useState({
     policyNumber: "",
@@ -19,12 +23,25 @@ const CreatePolicyPage = () => {
     premiumAmount: "",
     startDate: "",
     endDate: "",
+    userId: ""
   });
 
   const [isEditing, setIsEditing] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
+  const [globalError, setGlobalError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
 
+  // Generate years list (1900 -> currentYear+1)
+  useEffect(() => {
+    const currentYear = new Date().getFullYear();
+    const yearList = [];
+    for (let y = currentYear + 1; y >= 1900; y--) {
+      yearList.push(y);
+    }
+    setYears(yearList);
+  }, []);
+
+  // Load policy if editing
   useEffect(() => {
     if (policyId) {
       setIsEditing(true);
@@ -41,18 +58,32 @@ const CreatePolicyPage = () => {
     }
   };
 
+  // Load users for dropdown
   useEffect(() => {
-    // Sync state with DOM values for Selenium automation
-    syncRef.current = setInterval(() => {
-      const startDateInput = document.getElementById('startDate');
-      const endDateInput = document.getElementById('endDate');
-      
-      if (startDateInput && startDateInput.value !== policy.startDate) {
-        setPolicy(prev => ({ ...prev, startDate: startDateInput.value }));
+    const fetchUsers = async () => {
+      try {
+        const data = await getAllUsers();
+        setUsers(data);
+      } catch (err) {
+        console.error("Failed to load users:", err);
+        setGlobalError("Could not load users for assignment.");
       }
-      
+    };
+    fetchUsers();
+  }, []);
+
+  // Selenium sync for dates
+  useEffect(() => {
+    syncRef.current = setInterval(() => {
+      const startDateInput = document.getElementById("startDate");
+      const endDateInput = document.getElementById("endDate");
+
+      if (startDateInput && startDateInput.value !== policy.startDate) {
+        setPolicy((prev) => ({ ...prev, startDate: startDateInput.value }));
+      }
+
       if (endDateInput && endDateInput.value !== policy.endDate) {
-        setPolicy(prev => ({ ...prev, endDate: endDateInput.value }));
+        setPolicy((prev) => ({ ...prev, endDate: endDateInput.value }));
       }
     }, 100);
 
@@ -61,7 +92,7 @@ const CreatePolicyPage = () => {
         clearInterval(syncRef.current);
       }
     };
-  }, []);
+  }, [policy.startDate, policy.endDate]);
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
@@ -69,17 +100,22 @@ const CreatePolicyPage = () => {
       ...policy,
       [name]: type === "number" ? (value === "" ? "" : Number(value)) : value,
     });
+
+    // clear error for that field
+    setFieldErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validate dates
+
     if (new Date(policy.startDate) >= new Date(policy.endDate)) {
-      setError("End date must be after start date.");
+      setFieldErrors((prev) => ({
+        ...prev,
+        endDate: "End date must be after start date.",
+      }));
       return;
     }
-    
+
     try {
       if (isEditing) {
         await updatePolicy(policyId, policy);
@@ -87,12 +123,22 @@ const CreatePolicyPage = () => {
         await createPolicy(policy);
       }
       setSuccess(true);
-      setError("");
-
+      setGlobalError("");
+      setFieldErrors({});
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       console.error("Error saving policy:", err);
-      setError("Failed to save policy: " + (err.response?.data?.message || err.message));
+      const message = err.response?.data?.message || err.message;
+
+      if (message.includes("Policy number already exists")) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          policyNumber:
+            "This policy number already exists. Please choose another.",
+        }));
+      } else {
+        setGlobalError("Failed to save policy: " + message);
+      }
     }
   };
 
@@ -109,13 +155,17 @@ const CreatePolicyPage = () => {
       premiumAmount: "",
       startDate: "",
       endDate: "",
+      userId: "",
     });
+    setFieldErrors({});
+    setGlobalError("");
   };
 
   return (
     <div className="create-policy-container">
       <h2>{isEditing ? "Update Policy" : "Create New Policy"}</h2>
       <form onSubmit={handleSubmit} className="policy-form">
+        {/* Row 1 */}
         <div className="form-row">
           <label htmlFor="policyNumber">Policy Number:</label>
           <input
@@ -126,6 +176,9 @@ const CreatePolicyPage = () => {
             onChange={handleChange}
             required
           />
+          {fieldErrors.policyNumber && (
+            <p className="field-error">{fieldErrors.policyNumber}</p>
+          )}
 
           <label htmlFor="firstName">First Name:</label>
           <input
@@ -138,6 +191,7 @@ const CreatePolicyPage = () => {
           />
         </div>
 
+        {/* Row 2 */}
         <div className="form-row">
           <label htmlFor="lastName">Last Name:</label>
           <input
@@ -160,6 +214,7 @@ const CreatePolicyPage = () => {
           />
         </div>
 
+        {/* Row 3 */}
         <div className="form-row">
           <label htmlFor="vehicleModel">Vehicle Model:</label>
           <input
@@ -172,16 +227,23 @@ const CreatePolicyPage = () => {
           />
 
           <label htmlFor="vehicleYear">Vehicle Year:</label>
-          <input
-            type="number"
+          <select
             id="vehicleYear"
             name="vehicleYear"
             value={policy.vehicleYear}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Select Year</option>
+            {years.map((y) => (
+              <option key={y} value={y}>
+                {y}
+              </option>
+            ))}
+          </select>
         </div>
 
+        {/* Row 4 */}
         <div className="form-row">
           <label htmlFor="policyType">Policy Type:</label>
           <select
@@ -212,6 +274,7 @@ const CreatePolicyPage = () => {
           </select>
         </div>
 
+        {/* Row 5 */}
         <div className="form-row">
           <label htmlFor="premiumAmount">Premium Amount:</label>
           <input
@@ -223,6 +286,25 @@ const CreatePolicyPage = () => {
             required
           />
 
+          <label htmlFor="userId">Assign To User:</label>
+          <select
+            id="userId"
+            name="userId"
+            value={policy.userId}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select User</option>
+            {users.map((u) => (
+              <option key={u.id} value={u.id}>
+                {u.username} ({u.role})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Row 6 */}
+        <div className="form-row">
           <label htmlFor="startDate">Start Date:</label>
           <input
             type="date"
@@ -232,9 +314,7 @@ const CreatePolicyPage = () => {
             onChange={handleChange}
             required
           />
-        </div>
 
-        <div className="form-row">
           <label htmlFor="endDate">End Date:</label>
           <input
             type="date"
@@ -244,8 +324,12 @@ const CreatePolicyPage = () => {
             onChange={handleChange}
             required
           />
+          {fieldErrors.endDate && (
+            <p className="field-error">{fieldErrors.endDate}</p>
+          )}
         </div>
 
+        {/* Buttons */}
         <div className="button-group">
           <button type="submit" className="submit-button">
             {isEditing ? "Update Policy" : "Create Policy"}
@@ -263,7 +347,7 @@ const CreatePolicyPage = () => {
             : "Policy created successfully!"}
         </p>
       )}
-      {error && <p className="error-message">{error}</p>}
+      {globalError && <p className="error-message">{globalError}</p>}
     </div>
   );
 };

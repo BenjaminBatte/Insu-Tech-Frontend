@@ -1,0 +1,25 @@
+.policy-list {
+  margin-top: 20px;
+}
+
+.policy-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.policy-list th,
+.policy-list td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.policy-list th {
+  background-color: #f4f4f4;
+}
+
+.no-policies {
+  padding: 12px;
+  color: #666;
+  font-style: italic;
+}
