@@ -59,3 +59,23 @@
 .navbar a:hover::after {
   width: 100%;
 }
+
+@media (max-width: 900px) {
+  .navbar {
+    flex-direction: column;
+    padding: 15px;
+  }
+  
+  .navbar-heading {
+    margin-bottom: 15px;
+  }
+  
+  .navbar ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .navbar ul li {
+    margin: 10px;
+  }
+}

@@ -10,6 +10,7 @@ const Navbar = () => {
         <li><Link to="/create">Create Policy</Link></li>
         <li><Link to="/policies">View Policies</Link></li>
         <li><Link to="/search">Search Policies</Link></li>
+        <li><Link to="/users">User Management</Link></li>
       </ul>
     </nav>
   );
