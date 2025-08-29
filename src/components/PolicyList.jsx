@@ -1,24 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import PropTypes from "prop-types";
 import "../styles/PolicyListPage.css";
 
 const PolicyList = ({ policies }) => {
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
+  const [sortedPolicies, setSortedPolicies] = useState(policies);
 
   const handleSort = (field) => {
-    let newSortOrder = "asc";
-    if (sortField === field && sortOrder === "asc") {
-      newSortOrder = "desc"; 
-    }
-
+    const order = sortField === field && sortOrder === "asc" ? "desc" : "asc";
     setSortField(field);
-    setSortOrder(newSortOrder);
+    setSortOrder(order);
 
-    const sortedPolicies = [...policies].sort((a, b) => {
+    const sorted = [...policies].sort((a, b) => {
       let valueA = a[field];
       let valueB = b[field];
 
-    
       if (!isNaN(valueA) && !isNaN(valueB)) {
         valueA = Number(valueA);
         valueB = Number(valueB);
@@ -27,15 +24,13 @@ const PolicyList = ({ policies }) => {
         valueB = valueB?.toString().toLowerCase();
       }
 
-      if (valueA < valueB) return newSortOrder === "asc" ? -1 : 1;
-      if (valueA > valueB) return newSortOrder === "asc" ? 1 : -1;
+      if (valueA < valueB) return order === "asc" ? -1 : 1;
+      if (valueA > valueB) return order === "asc" ? 1 : -1;
       return 0;
     });
 
-    setSortedPolicies(sortedPolicies);
+    setSortedPolicies(sorted);
   };
-
-  const [sortedPolicies, setSortedPolicies] = useState(policies);
 
   return (
     <div className="policy-list-container">
@@ -54,7 +49,8 @@ const PolicyList = ({ policies }) => {
               { label: "Premium", field: "premiumAmount" },
             ].map(({ label, field }) => (
               <th key={field} onClick={() => handleSort(field)}>
-                {label} {sortField === field ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                {label}{" "}
+                {sortField === field ? (sortOrder === "asc" ? "▲" : "▼") : ""}
               </th>
             ))}
           </tr>
@@ -62,7 +58,9 @@ const PolicyList = ({ policies }) => {
         <tbody>
           {sortedPolicies.length === 0 ? (
             <tr>
-              <td colSpan="9" style={{ textAlign: "center" }}>No policies found.</td>
+              <td colSpan="9" style={{ textAlign: "center" }}>
+                No policies found.
+              </td>
             </tr>
           ) : (
             sortedPolicies.map((policy) => (
@@ -71,8 +69,13 @@ const PolicyList = ({ policies }) => {
                 <td>{policy.policyNumber}</td>
                 <td>{policy.status}</td>
                 <td>{policy.policyType}</td>
-                <td>{policy.vehicleMake} {policy.vehicleModel} ({policy.vehicleYear})</td>
-                <td>{policy.firstName} {policy.lastName}</td>
+                <td>
+                  {policy.vehicleMake} {policy.vehicleModel} (
+                  {policy.vehicleYear})
+                </td>
+                <td>
+                  {policy.firstName} {policy.lastName}
+                </td>
                 <td>{policy.startDate}</td>
                 <td>{policy.endDate}</td>
                 <td>${policy.premiumAmount}</td>
@@ -83,6 +86,25 @@ const PolicyList = ({ policies }) => {
       </table>
     </div>
   );
+};
+
+PolicyList.propTypes = {
+  policies: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      policyNumber: PropTypes.string,
+      status: PropTypes.string,
+      policyType: PropTypes.string,
+      vehicleMake: PropTypes.string,
+      vehicleModel: PropTypes.string,
+      vehicleYear: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      startDate: PropTypes.string,
+      endDate: PropTypes.string,
+      premiumAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    })
+  ).isRequired,
 };
 
 export default PolicyList;
